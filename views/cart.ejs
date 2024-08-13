@@ -51,4 +51,128 @@
             </div>
         </div>
     <% }) %>
+    <footer class="section-footer">
+        <div class="footer-container container">
+          <div class="content_1">
+            <!--img src="" alt="logo" /-->
+            <p id="logo">Scatch</p>
+            <p>
+              Welcome to Scatch, your ultimate destination for
+              cutting-edge gadgets!
+            </p>
+            <img src="https://i.postimg.cc/Nj9dgJ98/cards.png" alt="cards" />
+          </div>
+          <div class="content_2">
+            <h4>SHOPPING</h4>
+            <a href="#">Computer Store</a>
+            <a href="#">Laptop Store</a>
+            <a href="#">Accessories</a>
+            <a href="#">Sales & Discount</a>
+          </div>
+          <div class="content_3">
+            <h4>EXPERIENCE</h4>
+            <a href="">Contact Us</a>
+            <a href="" target="_blank">Payment Method</a>
+            <a href="" target="_blank">Delivery</a>
+            <a href="" target="_blank">Return and Exchange</a>
+          </div>
+          <div class="content_4">
+            <h4>NEWSLETTER</h4>
+            <p>Be the first to know about new<br />arrivals, sales & promos!</p>
+            <div class="f-mail">
+              <input type="email" placeholder="Your Email" />
+              <i class="bx bx-envelope"></i>
+            </div>
+            <hr />
+          </div>
+        </div>
+        <div class="f-design">
+          <div class="f-design-txt">
+            <p>Design and Code by Firoj</p>
+          </div>
+        </div>
+      </footer>
+      <style>
+        footer {
+  width: 100%;
+  height: 5%;
+  background: #dbd5de;
+  color: var(--backgroundColor);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  margin-top: 6.4rem;
+}
+
+#logo{
+    color: #534deb;
+    font-weight: bold;
+    font-size:xx-large;
+}
+
+.footer-container .content_1 img {
+  height: auto;
+  width: 16rem;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem 0;
+}
+
+.footer-container h4 {
+  color: var(--white);
+  font-weight: 500;
+  letter-spacing: 0.1rem;
+  margin-bottom: 2.5rem;
+  font-size: 1.3rem;
+}
+
+.footer-container a {
+  display: block;
+  text-decoration: none;
+  color: #3a3e40;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.footer-container .content_1 p,
+.footer-container .content_4 p {
+  color:#3a3e40;
+  margin: 2.5rem 0;
+  font-size: 1.2rem;
+}
+
+.footer-container .content_4 input[type="email"] {
+  background-color: var(--textColor);
+  border: none;
+  color: var(--backgroundColor);
+  outline: none;
+  padding: 1.4rem 0.8rem;
+  width: 100%;
+}
+
+.footer-container .content_4 .f-mail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-container .content_4 .bx {
+  color: var(--white);
+}
+
+.f-design {
+  width: 100%;
+  color: var(--white);
+  text-align: center;
+}
+
+.f-design .f-design-txt {
+  border-top: 1px solid var(--secondaryColor);
+  padding: 1.6rem 0;
+  color: var(--secondaryColor);
+}
+
+      </style>
     <%- include('./partials/footer') %>
