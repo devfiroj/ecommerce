@@ -5,10 +5,10 @@ SCATCH is a full-featured e-commerce platform built to provide users with a seam
 
 Features
 
-Login Page: Secure user authentication with registration and login functionality.
-Admin Page: Admin panel for managing products, orders, and users.
-Shopping Page: Display of products with  filter, and sort functionalities.
-Cart Page: Allows users to add, remove, and update products in their shopping cart.
+Login Page: Secure user authentication with registration and login functionality./n
+Admin Page: Admin panel for managing products, orders, and users./n
+Shopping Page: Display of products with  filter, and sort functionalities./n
+Cart Page: Allows users to add, remove, and update products in their shopping cart./n
 
 
 Technologies Used
