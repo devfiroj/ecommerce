@@ -3,7 +3,9 @@ SCATCH - E-commerce Website
 SCATCH is a full-featured e-commerce platform built to provide users with a seamless online shopping experience. The project includes key functionalities such as user authentication (login and registration), product browsing, shopping cart management, and an admin panel for managing products and orders.
 
 
-Features
+
+Features:
+
 
 Login Page: Secure user authentication with registration and login functionality.
 
@@ -14,14 +16,22 @@ Shopping Page: Display of products with  filter, and sort functionalities.
 Cart Page: Allows users to add, remove, and update products in their shopping cart.
 
 
-Technologies Used
+
+Technologies Used:
+
 
 Frontend: EJS, HTML, CSS, JavaScript
+
 Backend: Node.js, Express.js
+
 Database: MongoDB
+
 Templating: EJS (Embedded JavaScript)
+
 Styling: Tailwind CSS for styling the components
+
 JavaScript: For interactive elements and logic   
+
 
 This project serves as a foundational implementation of a basic e-commerce platform, suitable for learning and extending with additional features like payment integration, user reviews, and more.
 
