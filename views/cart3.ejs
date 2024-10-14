@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">Shopping Cart</h1>
+
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="p-6">
+                <% if (user.cart.length > 0) { %>
+                    <!-- Loop through each product in the cart -->
+                    <% user.cart.forEach(function(product) { %>
+                        <div class="product flex py-5 border-b border-gray-300">
+                            <!-- Product Image -->
+                            <div class="w-1/5 text-center">
+                                <img src="data:image/jpeg;base64, <%= product.product.image.toString('base64') %>" alt="Product Image" class="mx-auto w-24">
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="w-2/5">
+                                <div class="product-title text-lg font-medium mb-2"><%= product.product.name %></div>
+                            </div>
+
+                            <!-- Product Price -->
+                            <div class="w-1/5 text-center">
+                                <div class="product-price">$<%= product.product.price %></div>
+                            </div>
+
+                            <!-- Product Quantity -->
+                            <div class="w-1/5 text-center">
+                                <input type="number" value="<%= product.quantity %>" min="1" class="w-16 border border-gray-300 p-1 text-center" readonly>
+                            </div>
+
+                            <!-- Product Line Price -->
+                            <div class="w-1/5 text-right">
+                                <div class="product-line-price">$<%= (product.product.price * product.quantity).toFixed(2) %></div>
+                            </div>
+                        </div>
+                    <% }) %>
+
+                    <!-- Totals Section -->
+                    <div class="totals py-5 mt-5 border-t border-gray-300">
+                        <div class="totals-item flex justify-between py-2">
+                            <div class="totals-label">Subtotal:</div>
+                            <div class="totals-value">$<%= subtotal.toFixed(2) %></div>
+                        </div>
+                        <div class="totals-item flex justify-between py-2">
+                            <div class="totals-label">Tax (5%):</div>
+                            <div class="totals-value">$<%= tax.toFixed(2) %></div>
+                        </div>
+                        <div class="totals-item flex justify-between py-2">
+                            <div class="totals-label">Shipping:</div>
+                            <div class="totals-value">$<%= shipping.toFixed(2) %></div>
+                        </div>
+                        <div class="totals-item flex justify-between font-bold text-lg py-2">
+                            <div class="totals-label">Grand Total:</div>
+                            <div class="totals-value">$<%= total.toFixed(2) %></div>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <div class="text-right">
+                        <button class="checkout bg-green-500 text-white py-2 px-6 rounded-md mt-5 hover:bg-green-600">Checkout</button>
+                    </div>
+                <% } else { %>
+                    <p>Your cart is empty.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
