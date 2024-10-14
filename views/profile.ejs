@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<%- include('./partials/header') %>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+ 
+
+  <!-- Navbar for mobile devices -->
+  <nav class="bg-indigo-600 p-4 md:hidden">
+    <div class="flex justify-between items-center">
+      <div class="text-white text-lg font-bold">Profile</div>
+      <button id="menu-toggle" class="text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobile-menu" class="hidden">
+      <a href="#" class="block py-2 text-white">Home</a>
+      <a href="#" class="block py-2 text-white">Orders</a>
+      <a href="#" class="block py-2 text-white">Settings</a>
+    </div>
+  </nav>
+
+  <!-- Profile Section -->
+  <div class="container mx-auto my-10 p-6 max-w-4xl bg-white shadow-lg rounded-lg">
+    <div class="flex justify-center">
+      <img class="w-32 h-32 rounded-full border-4 border-black" src="https://img-cdn.pixlr.com/image-generator/history/65bb506dcb310754719cf81f/ede935de-1138-4f66-8ed7-44bd16efc709/medium.webp" alt="Profile Picture">
+    </div>
+
+    <div class="text-center mt-6">
+      <h2 class="text-3xl font-semibold text-gray-800" id="name"><%= user.fullname %></h2>
+      <p class="text-gray-600" id="email"><%= user.email %></p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+      <!-- Personal Information -->
+      <div class="bg-gray-50 p-4 rounded-lg shadow">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Personal Information</h3>
+        <ul id="info-list">
+          <li class="mb-2"><strong>Full Name:</strong> <span id="full-name"><%= user.fullname %></span></li>
+          <li class="mb-2"><strong>Email:</strong> <span id="email-info"><%= user.email %></span></li>
+          <li class="mb-2"><strong>Phone:</strong> <span id="phone-info"><%= user.contact || 'Not Provided' %></span></li>
+          <li class="mb-2"><strong>Address:</strong> <span id="address-info"><%= user.address || 'Not Provided' %></span></li>
+        </ul>
+        <div id="edit-fields" class="hidden">
+          <input type="text" id="edit-name" class="mb-2 w-full border border-gray-300 p-2 rounded" placeholder="Full Name" value="<%= user.fullname %>">
+          <input type="email" id="edit-email" class="mb-2 w-full text-gray-600 border border-gray-300 p-2 rounded" placeholder="Email" value="<%= user.email %>" disabled>
+          <input type="tel" id="edit-phone" class="mb-2 w-full border border-gray-300 p-2 rounded" placeholder="Phone" value="<%= user.contact %>">
+          <input type="text" id="edit-address" class="mb-2 w-full border border-gray-300 p-2 rounded" placeholder="Address" value="<%= user.address %>">
+        </div>
+        <button id="edit-btn" class="bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-400">Edit Information</button>
+        <button id="save-btn" class="hidden bg-green-600 text-white py-2 px-4 rounded hover:bg-green-500">Save Changes</button>
+      </div>
+
+      <!-- Order History -->
+      <div class="bg-gray-50 p-4 rounded-lg shadow">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Order History</h3>
+        <ul class="space-y-4">
+          <% user.orders.forEach(function(order) { %>
+          <li class="flex justify-between">
+            <span class="font-medium text-gray-700">Order #<%= order %></span>
+            <span class="text-gray-600"><%= order %></span>
+          </li>
+          <% }) %>
+        </ul>
+        <button class="mt-4 bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-400">View All Orders</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const editBtn = document.getElementById('edit-btn');
+    const saveBtn = document.getElementById('save-btn');
+    const editFields = document.getElementById('edit-fields');
+    const infoList = document.getElementById('info-list');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    editBtn.addEventListener('click', () => {
+      infoList.classList.add('hidden');
+      editFields.classList.remove('hidden');
+      editBtn.classList.add('hidden');
+      saveBtn.classList.remove('hidden');
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const fullName = document.getElementById('edit-name').value;
+      const email = document.getElementById('edit-email').value;
+      const phone = document.getElementById('edit-phone').value;
+      const address = document.getElementById('edit-address').value;
+
+      // Send the updated profile data to the server using Fetch API
+      fetch('/updateprofile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          fullname: fullName,
+          email: email,
+          contact: phone,
+          address: address
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          // Update the UI with the new data
+          document.getElementById('full-name').innerText = fullName;
+          document.getElementById('email-info').innerText = email;
+          document.getElementById('phone-info').innerText = phone;
+          document.getElementById('address-info').innerText = address;
+          document.getElementById('name').innerText = fullName;
+          // Hide the edit fields and show the static profile data
+          infoList.classList.remove('hidden');
+          editFields.classList.add('hidden');
+          editBtn.classList.remove('hidden');
+          saveBtn.classList.add('hidden');
+          alert('Profile updated successfully!');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+
+</html>
