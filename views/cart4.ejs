@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<%- include('./partials/header') %>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10">
+        <div class="flex shadow-md my-10">
+            <div class="w-full bg-white px-10 py-10">
+                <div class="flex justify-between border-b pb-8">
+                    <h1 class="font-semibold text-2xl">Shopping Cart</h1>
+                    <h2 class="font-semibold text-2xl"><%= cartItems.length %> Items</h2>
+                </div>
+                <div class="flex mt-10 mb-5">
+                    <h3 class="font-semibold text-gray-600 text-xs uppercase w-2/5">Product Details</h3>
+                    <h3 class="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Quantity</h3>
+                    <h3 class="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Price</h3>
+                    <h3 class="font-semibold text-gray-600 text-xs uppercase w-1/5 text-center">Total</h3>
+                </div>
+
+                <!-- Loop through cart items -->
+                <% cartItems.forEach(item => { %>
+                <div class="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
+                    <div class="flex w-2/5"> 
+                        <!-- Product Image -->
+                        <div class="w-20">
+                            <img class="h-24" src="data:image/jpeg;base64, <%= item.product.image.toString('base64') %>" alt="Product Image">
+                        </div>
+                        <div class="flex flex-col justify-between ml-4 flex-grow">
+                            <span class="font-bold text-sm"><%= item.product.name %></span>
+                            <button class="font-semibold hover:text-red-500 text-gray-500 text-xs" onclick="updateQuantity('<%= item.product._id %>', 'remove')">Remove</button>
+                        </div>
+                    </div>
+                    <!-- Quantity Buttons -->
+                    <div class="flex justify-center w-1/5">
+                        <button class="bg-gray-300 px-2 py-1 rounded" onclick="updateQuantity('<%= item.product._id %>', 'decrease')">-</button>
+                        <input class="mx-2 border text-center w-8" type="text" value="<%= item.quantity %>" readonly>
+                        <button class="bg-gray-300 px-2 py-1 rounded" onclick="updateQuantity('<%= item.product._id %>', 'increase')">+</button>
+                    </div>
+                    <!-- Product Price -->
+                    <span class="text-center w-1/5 font-semibold text-sm">₹<%= item.product.price.toFixed(2) %></span>
+                    <!-- Total Price (quantity * price) -->
+                    <span class="text-center w-1/5 font-semibold text-sm">₹<%= (item.product.price * item.quantity).toFixed(2) %></span>
+                </div>
+                <% }) %>
+
+                <div class="flex justify-between mt-10">
+                    <a href="/shop" class="flex font-semibold text-indigo-600 text-sm mt-10">
+                        <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512"><path d="M134.059 296H438.4c6.627 0 12-5.373 12-12V228c0-6.627-5.373-12-12-12H134.059l22.078-21.938c4.686-4.657 4.686-12.215 0-16.971L128.97 140.97c-4.686-4.686-12.284-4.686-16.971 0L9.37 243.556c-4.686 4.686-4.686 12.284 0 16.971l102.628 102.628c4.686 4.686 12.284 4.686 16.971 0l27.168-27.168c4.686-4.686 4.686-12.215 0-16.971L134.059 296z"/></svg>
+                        Continue Shopping
+                    </a>
+                    <div class="text-right">
+                        <h1 class="text-sm font-semibold uppercase">Subtotal: ₹<%= cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0).toFixed(2) %></h1>
+                        <button class="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle quantity update
+        function updateQuantity(productId, action) {
+            fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId, action }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
