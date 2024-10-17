@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // JavaScript to handle filter and search
+        function filterOrders() {
+            const orderStatus = document.getElementById('orderStatus').value;
+            const searchQuery = document.getElementById('searchBox').value;
+            window.location.href = `/owners/admin/orders?status=${orderStatus}&search=${searchQuery}`;
+        }
+
+        // JavaScript to change the order status
+        function updateOrderStatus(orderId) {
+            const status = document.getElementById(`status-select-${orderId}`).value;
+            console.log('Selected status:', status); 
+            fetch(`/owners/admin/orders/update/${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ orderStatus: status })
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    alert('Order status updated successfully!');
+                    window.location.reload(); // Refresh page to reflect changes
+                } else {
+                    alert('Error updating order status!');
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8">
+        <h1 class="text-2xl font-bold mb-6">Order Dashboard</h1>
+
+        <!-- Filter and Search Section -->
+        
+
+        <!-- Orders Table -->
+        <table class="min-w-full bg-white rounded-lg shadow-md">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="py-2 px-4">Order ID</th>
+                    <th class="py-2 px-4">Customer</th>
+                    <th class="py-2 px-4">Amount</th>
+                    <th class="py-2 px-4">Shipping Address</th>
+                    <th class="py-2 px-4">Products</th>
+                    <th class="py-2 px-4">Status</th>
+                    <th class="py-2 px-4">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through all orders -->
+                <% orders.forEach(function(order) { %>
+                <tr>
+                    <td class="py-2 px-4"><%= order._id %></td>
+                    <td class="py-2 px-4"><%= order.user.fullname %></td>
+                    <td class="py-2 px-4">₹<%= order.totalAmount %></td>
+                    <td class="py-2 px-4">
+                        <!-- Shipping Address -->
+                        <%= order.shippingAddress.street %>, <br>
+                        <%= order.shippingAddress.city %>, <br>
+                        <%= order.shippingAddress.state %>, <%= order.shippingAddress.zipCode %>, <%= order.shippingAddress.country %> <br>
+                        Phone: <%= order.shippingAddress.phone %>
+                    </td>
+                    <td class="py-2 px-4">
+                        <!-- Product List -->
+                        <ul>
+                            <% order.products.forEach(function(product) { %>
+                            <li><%= product.product.name %> (x<%= product.quantity %>) - ₹<%= product.priceAtPurchase * product.quantity %></li>
+                            <% }) %>
+                        </ul>
+                    </td>
+                    <td class="py-2 px-4">
+                        <select id="status-select-<%= order._id %>" class="border border-gray-300 p-2 rounded">
+                            <option value="processing" <% if (order.orderStatus === 'processing') { %>selected<% } %>>Processing</option>
+                            <option value="shipped" <% if (order.orderStatus === 'shipped') { %>selected<% } %>>Shipped</option>
+                            <option value="delivered" <% if (order.orderStatus === 'delivered') { %>selected<% } %>>Delivered</option>
+                            <option value="canceled" <% if (order.orderStatus === 'canceled') { %>selected<% } %>>Canceled</option>
+                        </select>
+                    </td>
+                    <td class="py-2 px-4">
+                        <button onclick="updateOrderStatus('<%= order._id %>')" class="bg-green-500 text-white py-2 px-4 rounded">Update</button>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

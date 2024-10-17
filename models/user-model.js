@@ -22,10 +22,10 @@ const userSchema=mongoose.Schema({
         }
     }],
     isAdmin:Boolean,
-    orders:{
-        type:Array,
-        default:[]
-    },
+    orders:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"order"
+    }],
     contact:Number,
     address:String,
     picture:String,

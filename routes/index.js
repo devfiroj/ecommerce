@@ -3,6 +3,8 @@ const router=express.Router();
 const isloggedin=require("../middlewares/isLoggedIn");
 const productModel = require("../models/product-model");
 const userModel = require("../models/user-model");
+const orderModel=require("../models/order-model");
+
 
 router.get("/",function(req,res){
     let error=req.flash("error");
@@ -65,7 +67,7 @@ router.get("/logout",isloggedin,async function(req,res){
     res.render("shop",{products});
 });
 router.get("/account",isloggedin,async function(req,res){
-    let user= await userModel.findOne({email:req.user.email});
+    let user= await userModel.findOne({email:req.user.email}).populate('orders');
     res.render("profile",{user});
     
 })
@@ -119,7 +121,10 @@ router.post('/cart/update',isloggedin, async (req, res) => {
               cartItem.quantity += 1;
           } else if (action === 'decrease' && cartItem.quantity > 1) {
               cartItem.quantity -= 1;
-          } else if(action=== 'remove'){
+          }  else if (action === 'decrease' && cartItem.quantity == 1) {
+            user.cart = user.cart.filter(item => item.product.toString() !== productId);
+          } 
+          else if(action=== 'remove'){
               user.cart = user.cart.filter(item => item.product.toString() !== productId);
           }
       }
@@ -130,5 +135,127 @@ router.post('/cart/update',isloggedin, async (req, res) => {
       res.json({ success: false });
   }
 });
+
+
+//checkout route
+
+// const Order = require('./models/order');
+// const User = require('./models/user');
+// const Product = require('./models/product');
+
+router.get('/checkout', isloggedin, async (req, res) => {
+    try {
+        // Fetch the logged-in user and populate the cart
+        const user = await userModel.findOne({ email: req.user.email }).populate('cart.product');
+
+        // Calculate total price
+        let totalAmount = 0;
+        user.cart.forEach(item => {
+            totalAmount += item.quantity * item.product.price;
+        });
+
+        res.render('checkout', {
+            user: user,
+            cartItems: user.cart,
+            totalAmount: totalAmount
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+});
+
+
+// place order
+router.post('/place-order', isloggedin, async (req, res) => {
+    const { shippingAddress, paymentMethod } = req.body;
+    const user = await userModel.findOne({ email: req.user.email }).populate('cart.product');
+
+    if (!user || user.cart.length === 0) {
+        req.flash('error', 'Your cart is empty');
+        res.redirect('/cart');
+    }
+    else{
+    // Calculate total amount
+    let totalAmount = 0;
+    user.cart.forEach(item => {
+        totalAmount += item.product.price * item.quantity;
+    });
+
+    // Create the order
+    const newOrder = new orderModel({
+        user: user._id,
+        products: user.cart.map(item => ({
+            product: item.product._id,
+            quantity: item.quantity,
+            priceAtPurchase: item.product.price
+        })),
+        totalAmount: totalAmount,
+        paymentMethod: paymentMethod,
+        shippingAddress: shippingAddress,
+        paymentStatus: 'pending' // Update based on payment later
+    });
+
+    await newOrder.save();
+
+    // Clear the cart
+    user.cart = [];
+    user.orders.push(newOrder);
+    await user.save();
+
+    req.flash('success', 'Order placed successfully');
+    res.redirect('/shop');
+  }
+});
+
+// const express = require('express');
+// const router = express.Router();
+// const userModel = require('../models/user');
+// const orderModel = require('../models/order');
+
+// // Middleware to check if the user is logged in
+// function isloggedin(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
+//     res.redirect('/login');
+// }
+
+// GET /orders - Display the user's orders
+router.get('/myorders', isloggedin, async (req, res) => {
+    try {
+        const user = await userModel.findOne({ email: req.user.email }).populate({
+            path: 'orders',
+            populate: {
+                path: 'products.product', // Populating the product details
+                model: 'product'
+            }
+        });
+
+        res.render('myorders', { user });
+    } catch (err) {
+        console.error(err);
+        res.redirect('/');
+    }
+});
+
+router.post('/orders/cancel/:orderId', isloggedin, async (req, res) => {
+  try {
+      const order = await orderModel.findById(req.params.orderId);
+      if (order && order.orderStatus === 'processing') {
+          order.orderStatus = 'canceled';
+          await order.save();
+          req.flash('success', 'Order canceled successfully');
+      } else {
+          req.flash('error', 'Order cannot be canceled');
+      }
+      res.redirect('/myorders');
+  } catch (err) {
+      req.flash('error', 'Something went wrong');
+      res.redirect('/myorders');
+  }
+});
+
+
 
 module.exports=router;

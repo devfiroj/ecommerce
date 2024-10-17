@@ -69,15 +69,19 @@
       <!-- Order History -->
       <div class="bg-gray-50 p-4 rounded-lg shadow">
         <h3 class="text-lg font-medium text-gray-800 mb-4">Order History</h3>
-        <ul class="space-y-4">
-          <% user.orders.forEach(function(order) { %>
-          <li class="flex justify-between">
-            <span class="font-medium text-gray-700">Order #<%= order %></span>
-            <span class="text-gray-600"><%= order %></span>
-          </li>
-          <% }) %>
-        </ul>
-        <button class="mt-4 bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-400">View All Orders</button>
+        <div class="mb-4">
+          <ul class="space-y-4">
+            <% user.orders.slice(-4).reverse().forEach(function(order) { %>
+            <li class="flex justify-between gap-2">
+              <span class="font-medium text-gray-700">Order #<%= order._id %></span>
+              <span class="text-gray-600"><%= order.orderStatus %></span>
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+        <div>
+          <a href="/myorders" class="mt-4 bg-purple-500 text-white py-2 px-4 rounded hover:bg-purple-400">View All Orders</a>
+        </div>
       </div>
     </div>
   </div>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Function to show a confirmation dialog before canceling the order
+        function confirmCancel(event, orderId) {
+            event.preventDefault(); // Prevent the form from submitting immediately
+            const confirmation = confirm("Are you sure you want to cancel this order?");
+            if (confirmation) {
+                document.getElementById(`cancel-form-${orderId}`).submit(); // Submit the form if confirmed
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-7xl mx-auto p-6">
+        <h1 class="text-2xl font-bold mb-6">My Orders</h1>
+
+        <ul class="space-y-6">
+            <% if (user.orders.length === 0) { %>
+                <li class="text-gray-500">You have no orders yet.</li>
+            <% } else { %>
+
+                <% user.orders.slice().reverse().forEach(function(order) { %>
+                <li class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between">
+                        <div>
+                            <span class="font-bold">Order #<%= order._id %></span>
+                            <p class="text-gray-600">Status: <%= order.orderStatus %></p>
+                            <p class="text-gray-600">Total Amount: ₹<%= order.totalAmount %></p>
+                            <p class="text-gray-600">Placed on: <%= new Date(order.placedAt).toLocaleDateString() %></p>
+
+                            <p class="text-gray-600">Shipping Address:</p>
+                            <p class="text-gray-600">
+                                <%= order.shippingAddress.street %>, <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>,
+                                <%= order.shippingAddress.zipCode %>, <%= order.shippingAddress.country %>
+                            </p>
+                            <p class="text-gray-600">Phone: <%= order.shippingAddress.phone %></p>
+                        </div>
+
+                        <!-- Cancel button logic based on order status -->
+                        <% if (order.orderStatus === 'processing') { %>
+                            <form id="cancel-form-<%= order._id %>" action="/orders/cancel/<%= order._id %>" method="POST">
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+                                onclick="confirmCancel(event,'<%= order._id %>')">
+                                    Cancel Order
+                                </button>
+                            </form>
+                        <% } else if (order.orderStatus === 'delivered') { %>
+                            <p class="text-green-600">Delivered - Cannot be canceled</p>
+                        <% } else if (order.orderStatus === 'shipped') { %>
+                            <p class="text-purple-700">Shipped - Cannot be canceled</p>
+                        <% } else if (order.orderStatus === 'canceled') { %>
+                            <p class="text-red-600">Canceled</p>
+                        <% } %>
+                    </div>
+
+                    <!-- Product details for the order -->
+                    <div class="mt-4">
+                        <h2 class="text-lg font-semibold">Products:</h2>
+                        <ul class="ml-4 mt-2">
+                            <% order.products.forEach(function(product) { %>
+                                <li class="flex justify-between">
+                                    <span><%= product.product.name %> (x<%= product.quantity %>)</span>
+                                    <span>₹<%= product.priceAtPurchase * product.quantity %></span>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </li>
+                <% }) %>
+
+            <% } %>
+        </ul>
+    </div>
+</body>
+</html>
