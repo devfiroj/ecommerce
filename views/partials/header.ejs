@@ -10,17 +10,19 @@
 </head>
 
 <body class="font-['helvetica_now_display']">
-    <nav class="w-full flex justify-between px-5 py-3">
-        <h3 class="text-xl">Scatch</h3>
+    <nav class="flex justify-between p-3 bg-gray-50 fixed top-0 left-0 right-0 z-10 shadow-md">
+        <h3 class="text-3xl font-bold text-blue-500">Scatch</h3>
         <% var loggedin=typeof loggedin !== "undefined" ? loggedin : true %>
         <% if(loggedin){ %>
             <div class="flex gap-5">
-                <a href="/shop">Shop</a>
-                <a href="/cart">Cart</a>
-                <a href="/account">My Account</a>
-                <a class="text-red-600" href="/users/logout">Logout</a>
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/shop">Shop</a>
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/cart">Cart</a>
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/account">My Account</a>
+                <a class="hover:text-red-400 text-red-600 text-lg" href="/users/logout">Logout</a>
                 
             </div>
         <% } %>
         
     </nav>
+
+    <div class="mt-10"></div>
