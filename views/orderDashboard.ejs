@@ -9,6 +9,11 @@
         // JavaScript to handle filter and search
         function filterOrders() {
             const orderStatus = document.getElementById('orderStatus').value;
+            //const searchQuery ='';
+            window.location.href = `/owners/admin/orders?status=${orderStatus}&search=`;
+        }
+        function searchOrders() {
+            const orderStatus = document.getElementById('orderStatus').value;
             const searchQuery = document.getElementById('searchBox').value;
             window.location.href = `/owners/admin/orders?status=${orderStatus}&search=${searchQuery}`;
         }
@@ -39,7 +44,22 @@
         <h1 class="text-2xl font-bold mb-6">Order Dashboard</h1>
 
         <!-- Filter and Search Section -->
-        
+        <div class="flex justify-between mb-6">
+            <!-- Order Status Filter -->
+            <select id="orderStatus" class="border border-gray-300 p-2 rounded" onchange="filterOrders()">
+                <option value=""<% if (status === '') { %>selected<% } %>>All Status</option>
+                <option value="processing" <% if (status === 'processing') { %>selected<% } %>>Processing</option>
+                <option value="shipped" <% if (status === 'shipped') { %>selected<% } %>>Shipped</option>
+                <option value="delivered" <% if (status === 'delivered') { %>selected<% } %>>Delivered</option>
+                <option value="canceled" <% if (status === 'canceled') { %>selected<% } %>>Canceled</option>
+            </select>
+
+            <!-- Search by Order ID -->
+            <div class="flex">
+                <input id="searchBox" type="text" placeholder="Search by Order ID" value="<%= search %>" class="border border-gray-300 p-2 rounded">
+                <button onclick="searchOrders()" class="bg-blue-500 text-white p-2 rounded ml-2">Search</button>
+            </div>
+        </div>
 
         <!-- Orders Table -->
         <table class="min-w-full bg-white rounded-lg shadow-md">
@@ -76,17 +96,27 @@
                             <% }) %>
                         </ul>
                     </td>
-                    <td class="py-2 px-4">
-                        <select id="status-select-<%= order._id %>" class="border border-gray-300 p-2 rounded">
-                            <option value="processing" <% if (order.orderStatus === 'processing') { %>selected<% } %>>Processing</option>
-                            <option value="shipped" <% if (order.orderStatus === 'shipped') { %>selected<% } %>>Shipped</option>
-                            <option value="delivered" <% if (order.orderStatus === 'delivered') { %>selected<% } %>>Delivered</option>
-                            <option value="canceled" <% if (order.orderStatus === 'canceled') { %>selected<% } %>>Canceled</option>
-                        </select>
-                    </td>
-                    <td class="py-2 px-4">
-                        <button onclick="updateOrderStatus('<%= order._id %>')" class="bg-green-500 text-white py-2 px-4 rounded">Update</button>
-                    </td>
+                    <% if(order.orderStatus === 'delivered'){ %>
+                        <td class="py-2 px-4">
+                            <h3 class="text-green-400 font-bold text-md text-center">DELIVERED</h3>
+                        </td>
+                        <td class="py-2 px-4">
+                            <button onclick="" class="bg-gray-500 text-white py-2 px-4 rounded" disabled>Update</button>
+                        </td>
+                    <% }else{ %>
+                        <td class="py-2 px-4">
+                            <select id="status-select-<%= order._id %>" class="border border-gray-300 p-2 rounded">
+                                <option value="processing" <% if (order.orderStatus === 'processing') { %>selected<% } %>>Processing</option>
+                                <option value="shipped" <% if (order.orderStatus === 'shipped') { %>selected<% } %>>Shipped</option>
+                                <option value="delivered" <% if (order.orderStatus === 'delivered') { %>selected<% } %>>Delivered</option>
+                                <option value="canceled" <% if (order.orderStatus === 'canceled') { %>selected<% } %>>Canceled</option>
+                            </select>
+                        </td>
+                        <td class="py-2 px-4">
+                            <button onclick="updateOrderStatus('<%= order._id %>')" class="bg-green-500 text-white py-2 px-4 rounded">Update</button>
+                        </td>
+                    <% } %>
+                    
                 </tr>
                 <% }) %>
             </tbody>

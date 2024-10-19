@@ -2,6 +2,8 @@ const userModel=require("../models/user-model");
 const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 const {generateTooken}=require("../utils/generateTokens");
+const ownerModel = require("../models/owner-model");
+const {generateTooken1}=require("../utils/generateTokens");
 
 
 const registerUser=async function(req,res){
@@ -60,4 +62,32 @@ module.exports.loginUser=async function(req,res){
 module.exports.logout=function (req, res){
     res.cookie("token","");
     res.redirect("/");
+};
+
+
+
+//owner Auth
+
+module.exports.loginOwner=async function(req,res){
+    let {email,password}=req.body;
+    let owner=await ownerModel.findOne({email:email});
+    if(!owner){
+        req.flash("error","Email or password incorrect");
+        return res.redirect("/owners/admin/login");
+    } 
+    
+    if(owner.password===password){    
+        let token=generateTooken1(owner);
+        res.cookie("token",token);
+        res.redirect("/owners/admin/orders");
+    }
+    else{
+        req.flash("error","Email or password incorrect");
+        return res.redirect("/owners/admin/login");
+    }
+};
+
+module.exports.ownerlogout=function (req, res){
+    res.cookie("token","");
+    res.redirect("/owners/admin/login");
 };

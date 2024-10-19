@@ -11,11 +11,32 @@ router.get("/",function(req,res){
     res.render("index",{error,loggedin:false});
 });
 
-router.get("/shop",isloggedin,async function(req,res){
-    let products=await productModel.find();
-    let success= req.flash("success")
-    res.render("shop",{products,success});
+router.get("/shop", isloggedin, async function (req, res) {
+    const { sortby } = req.query; // Get the sorting option from the query
+
+    let products;
+    
+    try {
+        // Sorting logic
+        if (sortby === 'newest') {
+            products = await productModel.find().sort({ _id: -1 }); // Sort by newest (by creation time)
+        } else if (sortby === 'lowtohigh') {
+            products = await productModel.find().sort({ price: 1 }); // Sort by price low to high
+        } else if (sortby === 'hightolow') {
+            products = await productModel.find().sort({ price: -1 }); // Sort by price high to low
+        } else {
+            // Default sorting, assuming popular is default
+            products = await productModel.find(); // You can replace this with custom sorting logic if needed
+        }
+
+        let success = req.flash("success");
+        res.render("shop", { products, success, sortby });
+    } catch (error) {
+        console.error("Error fetching products: ", error);
+        res.status(500).send("Error fetching products");
+    }
 });
+
 
 
 // router.get("/addtocart/:productid",isloggedin,async function(req,res){
@@ -29,7 +50,8 @@ router.get("/addtocart/:productid", isloggedin, async function(req, res) {
   try {
       // Find the user by their email (assuming req.user.email is available from session)
       let user = await userModel.findOne({ email: req.user.email });
-
+      const { sortby } = req.query; 
+      console.log(sortby);
       if (!user) {
           req.flash("error", "User not found");
           return res.redirect("/login");
@@ -53,7 +75,11 @@ router.get("/addtocart/:productid", isloggedin, async function(req, res) {
       await user.save();
 
       req.flash("success", "Product added to cart");
-      res.redirect("/shop");
+      if (sortby) {
+        res.redirect(`/shop?sortby=${sortby}`);
+        } else {
+        res.redirect("/shop");
+        }
 
   } catch (err) {
       console.error(err);
@@ -99,12 +125,7 @@ router.get("/cart", isloggedin, async (req, res) => {
   //console.log(user.cart);
   res.render('cart4', { cartItems: user.cart });
 });
-// app.get('/cart', async (req, res) => {
-//   const userId = req.session.userId;
-//   const user = await User.findById(userId).populate('cart.product');
-  
-//   res.render('cart', { cartItems: user.cart });
-// });
+
 
 
 
@@ -138,11 +159,6 @@ router.post('/cart/update',isloggedin, async (req, res) => {
 
 
 //checkout route
-
-// const Order = require('./models/order');
-// const User = require('./models/user');
-// const Product = require('./models/product');
-
 router.get('/checkout', isloggedin, async (req, res) => {
     try {
         // Fetch the logged-in user and populate the cart
@@ -208,18 +224,7 @@ router.post('/place-order', isloggedin, async (req, res) => {
   }
 });
 
-// const express = require('express');
-// const router = express.Router();
-// const userModel = require('../models/user');
-// const orderModel = require('../models/order');
 
-// // Middleware to check if the user is logged in
-// function isloggedin(req, res, next) {
-//     if (req.isAuthenticated()) {
-//         return next();
-//     }
-//     res.redirect('/login');
-// }
 
 // GET /orders - Display the user's orders
 router.get('/myorders', isloggedin, async (req, res) => {

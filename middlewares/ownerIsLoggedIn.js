@@ -1,25 +1,24 @@
 const jwt=require("jsonwebtoken");
-const userModel=require("../models/user-model");
+const ownerModel=require("../models/owner-model");
 
 module.exports=async function (req,res,next) {
     if(!req.cookies.token){
         req.flash("error","you need to login first");
-        return res.redirect("/");
+        return res.redirect("/owners/admin/login");
     }
 
     try{
         let decoded=jwt.verify(req.cookies.token,process.env.JWT_KEY);
-        let user=await userModel.findOne({email:decoded.email}).select("-password");
-        if(!user){
+        let owner=await ownerModel.findOne({email:decoded.email}).select("-password");
+        if(!owner){
             req.flash("error","you need to login first");
-            return res.redirect("/");
+            return res.redirect("/owners/admin/login");
         }
-        req.user=user;
+        req.owner=owner;
         next();
     }catch(err){
         req.flash("error","something went wrong.");
-        res.redirect("/");
-
+        res.redirect("/owners/admin/login");
     }
     
 };
