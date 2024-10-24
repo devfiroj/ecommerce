@@ -1,4 +1,23 @@
-<%- include('./partials/header') %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scatch</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="font-['helvetica_now_display']">
+    <nav class="flex justify-between p-3 bg-gray-50 fixed top-0 left-0 right-0 z-10 shadow-md">
+        <h3 class="text-3xl font-bold text-blue-500">Scatch</h3>
+            <div class="flex gap-5 items-center">
+                <a class="hover:text-blue-400 text-blue-600 mr-4" href="/owners/admin/login">Admin</a>                
+            </div>
+    </nav>
+
+    <div class="mt-10"></div>
 
     <% if(error.length>0){ %>
         <div class="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 p-3 rounded-md bg-red-500">
