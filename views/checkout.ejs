@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<%- include('./partials/header') %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +6,21 @@
     <title>Checkout</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 font-['helvetica_now_display']">
+    <!--Nav Bar-->
+    <nav class="flex justify-between p-3 bg-gray-50 fixed top-0 left-0 right-0 z-10 shadow-md font-['helvetica_now_display']">
+        <h3 class="text-3xl font-bold text-blue-500">Scatch</h3>
+        <% var loggedin=typeof loggedin !== "undefined" ? loggedin : true %>
+        <% if(loggedin){ %>
+            <div class="flex gap-5">
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/shop">Shop</a>
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/cart">Cart</a>
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/account">My Account</a>
+                <a class="hover:text-red-400 text-red-600 text-lg" href="/users/logout">Logout</a>
+                
+            </div>
+        <% } %>    
+    </nav>
 
     <!-- Container -->
     <div class="max-w-7xl mx-auto py-8 mt-16">
@@ -55,34 +68,34 @@
 
                 <!-- Shipping Address Form -->
                 <form action="/place-order" method="POST">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2" for="street">Street Address</label>
+                    <div class="mb-3">
+                        <label class="block text-gray-800 font-medium mb-2" for="street">Street Address</label>
                         <input type="text" id="street" name="shippingAddress[street]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2" for="city">City</label>
+                    <div class="mb-3">
+                        <label class="block text-gray-800 font-medium mb-2" for="city">City</label>
                         <input type="text" id="city" name="shippingAddress[city]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2" for="state">State</label>
+                    <div class="mb-3">
+                        <label class="block text-gray-800 font-medium mb-2" for="state">State</label>
                         <input type="text" id="state" name="shippingAddress[state]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2" for="zipCode">ZIP Code</label>
+                    <div class="mb-3">
+                        <label class="block text-gray-800 font-medium mb-2" for="zipCode">ZIP Code</label>
                         <input type="text" id="zipCode" name="shippingAddress[zipCode]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2" for="country">Country</label>
+                    <div class="mb-3">
+                        <label class="block text-gray-800 font-medium mb-2" for="country">Country</label>
                         <input type="text" id="country" name="shippingAddress[country]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 font-medium mb-2" for="phone">Phone</label>
+                    <div class="mb-3">
+                        <label class="block text-gray-800 font-medium mb-2" for="phone">Phone</label>
                         <input type="text" id="phone" name="shippingAddress[phone]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
                     </div>
 
                     <!-- Payment Method -->
                     <div class="mb-6">
-                        <label class="block text-gray-700 font-medium mb-2">Payment Method</label>
+                        <label class="block text-gray-800 font-medium mb-2">Payment Method</label>
                         <select name="paymentMethod" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-500">
                             <option value="credit card">Credit Card</option>
                             <option value="debit card">Debit Card</option>

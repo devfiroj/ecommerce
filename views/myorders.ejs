@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<%- include('./partials/header') %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -17,7 +16,21 @@
         }
     </script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 ">
+    <nav class="flex justify-between p-3 bg-gray-50 fixed top-0 left-0 right-0 z-10 shadow-md font-['helvetica_now_display']">
+        <h3 class="text-3xl font-bold text-blue-500">Scatch</h3>
+        <% var loggedin=typeof loggedin !== "undefined" ? loggedin : true %>
+        <% if(loggedin){ %>
+            <div class="flex gap-5">
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/shop">Shop</a>
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/cart">Cart</a>
+                <a class="hover:text-slate-500 text-lg text-slate-700" href="/account">My Account</a>
+                <a class="hover:text-red-400 text-red-600 text-lg" href="/users/logout">Logout</a>
+                
+            </div>
+        <% } %>
+        
+    </nav>
     <div class="max-w-7xl mx-auto p-6 mt-16">
         <h1 class="text-2xl font-bold mb-6">My Orders</h1>
 
