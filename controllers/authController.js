@@ -8,13 +8,27 @@ const {generateTooken1}=require("../utils/generateTokens");
 
 const registerUser=async function(req,res){
     try{
-        let {fullname,email,password}=req.body;
+        
+        let email=req.session.email;
+        let fullname=req.session.fullname;
+        let password=req.session.password; 
+        let otp=req.session.otp;
+        //let {fullname,email,password}=req.body;
+        const {enteredOtp} = req.body;
         let user=await userModel.findOne({email:email});
         if(user){
             req.flash("error","you alrady have an account, please log in");
             return res.redirect("/");
         } 
+        
+        // Check if OTP matches
+        if (parseInt(enteredOtp, 10) !== otp) {
+            req.flash("error", "Invalid OTP. Please try again.");
+            //console.log("wrong otp")
+            return res.redirect(`/?otp=true&fullname=${req.session.fullname}&email=${(req.session.email)}`);
+        }
 
+        
         bcrypt.genSalt(10,function(err,salt){
             bcrypt.hash(password,salt,async function(err,hash){
                 if (err) return res.send(err.message);

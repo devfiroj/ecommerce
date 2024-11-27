@@ -7,8 +7,9 @@ const orderModel=require("../models/order-model");
 
 
 router.get("/",function(req,res){
+    const { otp='',fullname = '', email = '' } = req.query;
     let error=req.flash("error");
-    res.render("index",{error,loggedin:false});
+    res.render("index",{error,loggedin:false,otp,fullname,email});
 });
 
 router.get("/shop", isloggedin, async function (req, res) {
@@ -46,12 +47,12 @@ router.get("/shop", isloggedin, async function (req, res) {
 //     req.flash("success","Added to cart");
 //     res.redirect("/shop");
 // });
-router.get("/addtocart/:productid", isloggedin, async function(req, res) {
+router.get("/addtocart/:productid",isloggedin, async function(req, res) {
   try {
       // Find the user by their email (assuming req.user.email is available from session)
       let user = await userModel.findOne({ email: req.user.email });
       const { sortby } = req.query; 
-      console.log(sortby);
+      //console.log(sortby);
       if (!user) {
           req.flash("error", "User not found");
           return res.redirect("/login");

@@ -6,7 +6,7 @@ module.exports=async function (req,res,next) {
         req.flash("error","you need to login first");
         return res.redirect("/owners/admin/login");
     }
-
+    
     try{
         let decoded=jwt.verify(req.cookies.token,process.env.JWT_KEY);
         let owner=await ownerModel.findOne({email:decoded.email}).select("-password");
